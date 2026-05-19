@@ -1,71 +1,53 @@
-# repo-docs
+# repo-docs - AI Authoring Guide
 
-A GitHub Copilot Chat Skill that generates or refreshes `README.md` and `AGENTS.md` by inspecting a repo's actual file structure and config files. Uses a seven-step workflow: classify archetype → gather context → determine scope → generate README → generate AGENTS.md → write files → verify. Supports `code`, `skills`, `courseware`, `docs`, and `hybrid` archetypes.
+> This repository hosts a single AI skill (`repo-docs`) equipped with a multi-layered Python reconnaissance toolkit and various markdown templates. This document serves as a Meta-Authoring Guide, dictating how AI agents should modify or extend this skill.
 
-## Workflows & Commands
+## Directory Structure & Taxonomy
 
-### Run recon on a repo (code archetype)
-```bash
-python scripts/recon.py <repo_root>
-# Outputs JSON: directory tree, detected project type, build/test/lint commands, entry points
-```
+Respect the semantic boundaries of the following directories:
 
-### Update a template
-```bash
-# Edit references/readme-template.md or references/agents-template.md directly.
-# Templates are plain Markdown — no build step needed.
-```
-
-### Extend archetype support
-```bash
-# 1. Add archetype signals to the table in SKILL.md (Step 0 — Archetype signals)
-# 2. Add a gathering branch in SKILL.md (Step 1 — archetype-specific section)
-# 3. Add the section set row to references/readme-template.md (Archetype-Aware table)
-# 4. Add the commands block to references/agents-template.md (Non-Code Archetype Templates)
-```
-
-## Skills Inventory
-
-| Field | Value |
+| Directory | Purpose / Rules |
 |---|---|
-| `name` | `repo-docs` |
-| `description` | Automatically generate or update README.md and AGENTS.md for any repo type. |
-| Reference files | `references/agents-template.md`, `references/manual-recon.md`, `references/readme-template.md` |
-| Scripts | `scripts/recon.py` (code archetype recon) |
+| `SKILL.md` | The core executable logic for the skill. It controls the classification logic and workflow steps. |
+| `references/` | Markdown templates that dictate the structure of generated README and AGENTS files. Contains archetype-specific files (e.g., `product-*`, `skills-*`). |
+| `scripts/` | Specialized Python scripts (`recon_*.py`) that the skill invokes to gather facts about the target repository. |
 
-## File Layout
+## How to Extend (Scaffolding / Modifying)
 
-```
-SKILL.md                             # Skill entry point — seven-step workflow
-references/
-  readme-template.md                 # Archetype-aware README.md template
-  agents-template.md                  # Archetype-aware AGENTS.md template
-  manual-recon.md                    # Bash commands for manual recon (no Python)
-scripts/
-  recon.py                           # Automated recon for code archetype repos
-```
+When asked by the user to modify or extend this skill, you **MUST strictly follow this procedure**:
 
-## Authoring Rules
+### 1. Adding Support for a New Archetype
+If asked to support a new repository type (e.g., "game engine"):
+- **Update `SKILL.md`**: Add the new archetype to the "Archetype signals" and "Forced clarification" tables in Step 0.
+- **Add Templates**: Create a new `{archetype}-readme-template.md` and `{archetype}-agents-template.md` in the `references/` folder.
+- **Update Master Indexes**: Modify `references/readme-template.md` and `references/agents-template.md` to map the new archetype to your new templates.
 
-- **Frontmatter** must have `name` and `description`. Description should match the trigger phrases users will say (e.g., "generate docs", "create a README").
-- **Templates** in `references/` use `{placeholder}` syntax (single braces). All placeholders must be replaced with real values from config files when generating output — never emit a bare `{placeholder}` literal.
-- **`{{TODO: ...}}` markers** (double braces) are emitted in *output* when data is unavailable. They are not template placeholders — do not remove them from SKILL.md without a substitute.
-- **`recon.py`** is only invoked for the `code` archetype. All other archetypes use direct file reading per the Step 1 branch in SKILL.md.
-- **Source citations**: every generated documentation section must note which file(s) it was derived from, to keep output verifiable.
-- **Preserve human content**: when updating existing README or AGENTS.md, keep prose, screenshots, badges, and custom sections intact. Only refresh auto-detectable sections.
+### 2. Modifying Reconnaissance Logic
+If asked to make the skill detect new things (e.g., "detect if it uses GraphQL"):
+- **Modify Scripts**: Edit the appropriate Python script in `scripts/` (e.g., `recon_code.py` for dependencies, or `recon_core.py` for config files).
+- **Update SKILL.md**: If the new logic requires a new script, ensure you add the execution command to Step 1 of `SKILL.md`.
+
+### 3. Modifying Output Templates
+If asked to change what the generated README/AGENTS files look like:
+- Edit the corresponding files in the `references/` directory.
+- **NEVER** use `{}` for placeholders. Always use `{placeholder}` if it's meant to be replaced, or `{{TODO: ...}}` for missing data markers.
+
+---
 
 ## Frontmatter Schema
 
+`SKILL.md` MUST begin with this exact YAML structure:
+
 ```yaml
 ---
-name: "{skill-name}"       # kebab-case
-description: >             # trigger phrases the user would say
-  Automatically generate or update ...
+name: "repo-docs"
+description: >
+  Automatically generate or update README.md and AGENTS.md based on a repository's...
 ---
 ```
+*(Note: Unlike some skills, repo-docs does not currently utilize a `resources` array in its frontmatter, as it loads references dynamically based on the detected archetype).*
 
-## Do Not Edit
+## Constraints & Gotchas
 
-- The `## Full Template (code archetype)` block in `references/readme-template.md` — canonical section set parsed by the skill.
-- The output schema of `scripts/recon.py` — JSON keys are referenced by name in SKILL.md Step 1 (`code` branch).
-- `{{TODO: ...}}` patterns in `SKILL.md` — these are intentional output markers, not authoring placeholders.
+- **Python Scripts Execution**: The skill relies entirely on the `python scripts/recon_*.py` commands working on the user's machine. Do not introduce dependencies that require `pip install`; stick to the Python standard library (`os`, `sys`, `json`, `re`, `pathlib`).
+- **Preservation Principle**: The core rule of this skill is to preserve human-written content. Ensure any workflow changes in `SKILL.md` maintain the "Smart Restructure & Merge" logic.
