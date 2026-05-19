@@ -21,7 +21,8 @@ template at the end of this file.
 |---|---|---|
 | **`code`** | Full `## Commands` with setup/dev/test/lint/build | Architecture, Conventions, Do Not Edit, Gotchas |
 | **`product`** | `## Development Commands` (Setup, Dev, Test, Build) | Tech Stack, Domain Knowledge Mapping, System Boundaries |
-| **`skills`** | `## Workflows & Commands` (authoring, linking, linting) | Skills Inventory, Authoring Rules, Frontmatter Schema |
+| **`single-skill`**| `## Commands` (Testing, Linting) | See [`skills-agents-template.md`](skills-agents-template.md) (Taxonomy, Extension Rules, Schema) |
+| **`multi-skills`**| `## Commands` (Authoring, Linking, Linting) | See [`skills-agents-template.md`](skills-agents-template.md) (Taxonomy, Extension Rules, Schema) |
 | **`courseware`** | `## Workflows & Commands` (scaffold, lint, commit) | Exercise Structure, Naming Conventions, Lint Rules |
 | **`docs`** | `## Workflows & Commands` (build, preview, publish) | Page Tree, Authoring Rules, Style Conventions |
 | **`hybrid`** | Combine applicable blocks | Combine relevant extra sections |

@@ -46,7 +46,8 @@ template sections to populate.
 |---|---|
 | **`code`** | `package.json`, `Cargo.toml`, `pyproject.toml`, `*.sln`, `go.mod` at root |
 | **`product`** | `docker-compose.yml`, `pnpm-workspace.yaml`, distinct frontend/backend apps, end-user focus |
-| **`skills`** | `SKILL.md` files as primary content; `skills/` directory tree |
+| **`single-skill`**| `SKILL.md` at repository root; usually accompanied by `examples/` or `guidelines/` |
+| **`multi-skills`**| `skills/` directory tree containing multiple nested `SKILL.md` files |
 | **`courseware`** | `exercises/` directory; numbered folders like `XX.YY-name/`; domain CLI tools |
 | **`docs`** | Primarily `.md` files, no build system; `gitbook.yaml`, `mkdocs.yml`, `_sidebar.md` |
 | **`hybrid`** | Meaningful mix of two or more archetypes above |
@@ -73,7 +74,8 @@ specific signals observed and your best guess (if any).
   "options": [
     { "label": "Code project (Node, Python, Rust, .NET, Go, etc.)" },
     { "label": "Product / App (End-user facing, full-stack, monorepo)" },
-    { "label": "AI Skills library (SKILL.md files)" },
+    { "label": "Single AI Skill (SKILL.md at root)" },
+    { "label": "Multi-Skills Collection (skills/ directory)" },
     { "label": "Educational courseware (exercises, lessons)" },
     { "label": "Documentation site (Markdown, GitBook, MkDocs)" },
     { "label": "Hybrid — I'll describe below" }
@@ -94,7 +96,7 @@ classification.
 State this block explicitly before moving to Step 1:
 
 ```
-Archetype : <code | product | skills | courseware | docs | hybrid>
+Archetype : <code | product | single-skill | multi-skills | courseware | docs | hybrid>
 Confidence: <high | confirmed by user>
 Signals   : <2–4 bullet observations>
 ```
@@ -138,12 +140,14 @@ A product requires deep understanding of its boundaries and user documentation.
    python /path/to/skill/scripts/recon_workspace.py <repo_root>
    ```
 
-#### `skills` — Read skill definitions
+#### `single-skill` and `multi-skills` — Run the skills recon script
 
-For each `SKILL.md` in the repo, extract from YAML frontmatter:
-- `name`, `description`, `version` (if present)
-- Parent directory name (= category)
-- Whether `examples/`, `references/`, or other subfolders exist
+Run the specialized skill parser:
+```bash
+python /path/to/skill/scripts/recon_skills.py <repo_root>
+```
+
+This script extracts YAML frontmatter, identifies categories (for `multi-skills`), spots supplementary folders (`examples/`, `guidelines/`), and detects cross-skill dependencies (e.g., when a skill mentions `/setup-project` in its text). Use this output to populate workflow dependencies and categorized tables.
 
 Also read the root `README.md`, `CONTEXT.md`, `CLAUDE.md` (if any).
 
