@@ -1,17 +1,17 @@
 ---
 name: repo-docs
 description: >
-  Automatically generate or update README.md and AGENT.md based on a repository's
+  Automatically generate or update README.md and AGENTS.md based on a repository's
   current file structure and configuration files. Works with any repo type: code
   projects (Node, Python, .NET, Rust, Go, monorepo), AI skill libraries, educational
   courseware, documentation sites, or hybrids. Use this skill whenever the user asks
-  to "generate docs", "create a README", "write an AGENT.md", "update project docs",
+  to "generate docs", "create a README", "write an AGENTS.md", "update project docs",
   or "document my repo" — for any project type, not just code.
 ---
 
 # Repo Docs Skill
 
-Generates or updates `README.md` and `AGENT.md` by inspecting the repo's real
+Generates or updates `README.md` and `AGENTS.md` by inspecting the repo's real
 file structure and configuration files — no guessing, no hallucinating project
 details.
 
@@ -114,7 +114,7 @@ The script outputs a JSON summary covering:
 - Directory tree (depth-limited, ignoring noise)
 - Detected project type(s) and language(s)
 - Build / test / lint commands extracted from config files
-- Existing README.md and AGENT.md content (if present)
+- Existing README.md and AGENTS.md content (if present)
 - Key entry points and important files
 
 If the user hasn't provided a repo path, ask for it or default to `.` (current
@@ -166,8 +166,8 @@ Check which files already exist:
 | Situation | Action |
 |---|---|
 | Neither exists | Generate both from scratch |
-| README exists, AGENT missing | Generate AGENT.md; offer to refresh README |
-| AGENT exists, README missing | Generate README.md; offer to refresh AGENT |
+| README exists, AGENTS missing | Generate AGENTS.md; offer to refresh README |
+| AGENTS exists, README missing | Generate README.md; offer to refresh AGENTS |
 | Both exist | Update both, preserving user-written sections |
 
 **Always ask before overwriting** custom sections (badges, screenshots, license
@@ -207,7 +207,7 @@ archetype from Step 0, not all sections unconditionally.
 | **Contributing** | Brief note or link to CONTRIBUTING.md |
 | **Troubleshooting / FAQ** | Common pitfalls found in the codebase |
 | **License** | SPDX ID from LICENSE file or package.json |
-| **For AI Agents** | One-line notice pointing agents to `AGENT.md` (see below) |
+| **For AI Agents** | One-line notice pointing agents to `AGENTS.md` (see below) |
 
 Skip sections gracefully when the required info is genuinely unavailable; use
 `{{TODO: ...}}` with a verification hint rather than omitting silently.
@@ -220,10 +220,10 @@ found in the source files.
 
 Always include a short notice near the top of README.md (after the one-line
 description, before the Table of Contents) to help AI models that do not
-automatically read `AGENT.md`:
+automatically read `AGENTS.md`:
 
 ```markdown
-> **AI agents:** Read [`AGENT.md`](AGENT.md) for architecture, exact commands,
+> **AI agents:** Read [`AGENTS.md`](AGENTS.md) for architecture, exact commands,
 > conventions, and constraints before making changes.
 ```
 
@@ -232,8 +232,8 @@ still get directed to the authoritative machine-readable context.
 
 **Content segregation rule:** Any content primarily useful to an AI agent
 (exact commands, architecture details, coding conventions, constraints,
-gotchas) belongs in `AGENT.md`, **not** in `README.md`. If such content
-currently exists in README.md, move it to AGENT.md and replace it with a
+gotchas) belongs in `AGENTS.md`, **not** in `README.md`. If such content
+currently exists in README.md, move it to AGENTS.md and replace it with a
 one-line pointer. Human-facing prose (overview, screenshots, contributing
 guide, license) stays in README.md.
 
@@ -245,24 +245,24 @@ clearly (e.g., "Build — TypeScript", "Build — .NET").
 
 ---
 
-### Step 4 — Generate AGENT.md
+### Step 4 — Generate AGENTS.md
 
 Target audience: **AI coding agents** (Claude Code, Copilot, etc.).
 
-Use the template in `references/agent-template.md` as your structural guide. For
+Use the template in `references/agents-template.md` as your structural guide. For
 non-`code` archetypes, replace the **Commands** block with **Workflows & Commands**
 and populate archetype-specific sections as described in the template.
 
 #### Migrate AI-specific content from README
 
-Before generating AGENT.md from scratch, scan the existing README.md for any
-content that belongs in AGENT.md instead:
+Before generating AGENTS.md from scratch, scan the existing README.md for any
+content that belongs in AGENTS.md instead:
 - Sections titled "For AI", "Agent notes", "CLAUDE notes", "Copilot context", etc.
 - Detailed command tables intended for automation
 - Architecture diagrams described in text form
 - Constraint or gotcha lists
 
-Move that content into AGENT.md verbatim (preserving intent), then replace it
+Move that content into AGENTS.md verbatim (preserving intent), then replace it
 in README.md with the standard AI agent notice (see Step 3).
 
 Must include:
@@ -288,7 +288,7 @@ is machine-read first.
 
 ### Step 5 — Write files
 
-Write to `<repo_root>/README.md` and `<repo_root>/AGENT.md`.
+Write to `<repo_root>/README.md` and `<repo_root>/AGENTS.md`.
 
 If updating existing files, show a diff summary of what changed before writing.
 Always confirm with the user before overwriting.
@@ -299,7 +299,7 @@ Always confirm with the user before overwriting.
 
 Run the following checklist before declaring done:
 
-- [ ] Every command in README.md and AGENT.md exists in a config file or is a
+- [ ] Every command in README.md and AGENTS.md exists in a config file or is a
       well-known standard tool invocation.
 - [ ] Version numbers (Node, Python, .NET, etc.) match what's in config files.
 - [ ] No `[Your Name]`, `TODO` (without `{{}}`), or other stale placeholder text.
@@ -307,9 +307,9 @@ Run the following checklist before declaring done:
       and how to verify it.
 - [ ] Media/screenshot links from the original README are preserved exactly.
 - [ ] Multi-language repos have separate command sections per toolchain.
-- [ ] README.md contains the AI agent notice pointing to `AGENT.md`.
+- [ ] README.md contains the AI agent notice pointing to `AGENTS.md`.
 - [ ] No AI-specific content (commands, constraints, gotchas) remains in README.md
-      without a corresponding entry in AGENT.md.
+      without a corresponding entry in AGENTS.md.
 
 Report remaining `{{TODO}}` gaps to the user with actionable next steps.
 
@@ -355,13 +355,13 @@ After writing the files, output:
 | `skills/` directory | skills collection — categories, skill count |
 | `exercises/XX.YY-*/` | courseware — section/exercise structure, numbering scheme |
 | `gitbook.yaml` / `mkdocs.yml` / `_sidebar.md` | docs site — navigation, page tree |
-| `CURSOR.md` / `AGENT.md` (root) | AI agent conventions, architectural rules |
+| `CURSOR.md` / `AGENTS.md` (root) | AI agent conventions, architectural rules |
 
 ---
 
 ## Edge cases
 
-**Monorepos**: Generate a root-level README/AGENT.md that describes the workspace
+**Monorepos**: Generate a root-level README/AGENTS.md that describes the workspace
 and lists packages. Note individual packages may have their own docs.
 
 **Multiple languages**: List all detected languages; include separate Quick Start
@@ -379,14 +379,14 @@ Mark behavior that can't be confirmed with `{{TODO: verify <script> behavior}}`.
 
 **AI Skills repos**: List every skill (`name` + `description`) in a Skills Index
 table in README. README should explain how to activate skills in an AI assistant.
-AGENT.md should describe authoring conventions: frontmatter schema, trigger phrases,
+AGENTS.md should describe authoring conventions: frontmatter schema, trigger phrases,
 file placement, and naming rules.
 
 **Courseware repos**: Document the section/exercise numbering scheme and folder
 conventions. README should list the full course outline as a structured table or tree.
-AGENT.md should include the domain lint command, required file structure, and naming
+AGENTS.md should include the domain lint command, required file structure, and naming
 rules (e.g., `XX.YY-dash-case`, required `readme.md` in each variant subfolder).
 
 **Documentation sites**: Treat `.md` file titles as the structural skeleton. README
-should summarise the site's purpose and link to the live URL if known. AGENT.md should
+should summarise the site's purpose and link to the live URL if known. AGENTS.md should
 note the build/publish workflow and any content authoring rules.

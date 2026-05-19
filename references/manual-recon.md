@@ -81,7 +81,7 @@ grep -h "run:" .github/workflows/*.yml 2>/dev/null | head -30
 
 ```bash
 cat README.md 2>/dev/null
-cat AGENT.md 2>/dev/null
+cat AGENTS.md 2>/dev/null
 ```
 
 ## 8. Key config files (check presence)

@@ -174,7 +174,7 @@ def main():
 
     # Read existing docs
     existing_readme = read_file_safe(repo_root / "README.md")
-    existing_agent = read_file_safe(repo_root / "AGENT.md")
+    existing_agent = read_file_safe(repo_root / "AGENTS.md")
 
     ci_commands = read_ci_commands(repo_root)
 
@@ -198,7 +198,7 @@ def main():
         "existing_readme": existing_readme,
         "existing_agent": existing_agent,
         "has_readme": (repo_root / "README.md").exists(),
-        "has_agent": (repo_root / "AGENT.md").exists(),
+        "has_agent": (repo_root / "AGENTS.md").exists(),
         "has_ci": (repo_root / ".github" / "workflows").exists(),
         "has_docker": (repo_root / "Dockerfile").exists(),
         "has_makefile": (repo_root / "Makefile").exists(),

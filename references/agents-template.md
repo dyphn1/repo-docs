@@ -1,4 +1,4 @@
-# AGENT.md Template
+# AGENTS.md Template
 
 Terse, directive. Every section should be machine-readable.
 No filler. No prose padding. Commands must be exact and copy-pasteable.
@@ -247,7 +247,7 @@ and where the live site is published.}
 
 ---
 
-## Style rules for AGENT.md
+## Style rules for AGENTS.md
 
 - **Imperative** sentences: "Run X to do Y" not "You can run X..."
 - **No intros or sign-offs** — agents don't need greetings
