@@ -1,3 +1,8 @@
+---
+name: "agents-template"
+description: "Canonical AGENTS.md template with archetype-aware section selection."
+---
+
 # AGENTS.md Template
 
 Terse, directive. Every section should be machine-readable.
@@ -15,6 +20,7 @@ template at the end of this file.
 | Archetype | Commands block | Extra sections |
 |---|---|---|
 | **`code`** | Full `## Commands` with setup/dev/test/lint/build | Architecture, Conventions, Do Not Edit, Gotchas |
+| **`product`** | `## Development Commands` (Setup, Dev, Test, Build) | Tech Stack, Domain Knowledge Mapping, System Boundaries |
 | **`skills`** | `## Workflows & Commands` (authoring, linking, linting) | Skills Inventory, Authoring Rules, Frontmatter Schema |
 | **`courseware`** | `## Workflows & Commands` (scaffold, lint, commit) | Exercise Structure, Naming Conventions, Lint Rules |
 | **`docs`** | `## Workflows & Commands` (build, preview, publish) | Page Tree, Authoring Rules, Style Conventions |

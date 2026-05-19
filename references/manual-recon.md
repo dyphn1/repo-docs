@@ -1,3 +1,8 @@
+---
+name: "manual-recon"
+description: "Bash commands for manual repository reconnaissance when python scripts are unavailable."
+---
+
 # Manual Recon Steps
 
 Use these bash commands when `recon.py` is not available.

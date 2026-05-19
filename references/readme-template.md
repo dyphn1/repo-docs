@@ -1,3 +1,8 @@
+---
+name: "readme-template"
+description: "Canonical README.md template with archetype-aware section selection."
+---
+
 # README.md Template
 
 Use this as a structural guide. Omit sections gracefully when info isn't available.
@@ -13,6 +18,7 @@ workflow). Never leave empty section headings — skip sections that don't apply
 | Archetype | Include | Skip |
 |---|---|---|
 | **`code`** | All sections in the full template below | — |
+| **`product`** | See [`product-readme-template.md`](product-readme-template.md) for full layout (Overview, Getting Started, Workflow, FAQ, etc.) | Build, Test, Debugging, Packaging (moved to AGENTS.md) |
 | **`skills`** | Title, Overview, Skills Index, Usage (how to activate), Authoring a New Skill, Contributing, License | Installation, Build, Test, Debugging, Packaging |
 | **`courseware`** | Title, Overview, Course Structure, Prerequisites, How to Run Exercises, Contributing, License | Build, Debugging, Packaging |
 | **`docs`** | Title, Overview, Documentation Structure, How to Contribute Docs, Build / Publish (if applicable), License | Test, Debugging, Packaging |

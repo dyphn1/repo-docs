@@ -45,6 +45,7 @@ template sections to populate.
 | Archetype | Key indicators |
 |---|---|
 | **`code`** | `package.json`, `Cargo.toml`, `pyproject.toml`, `*.sln`, `go.mod` at root |
+| **`product`** | `docker-compose.yml`, `pnpm-workspace.yaml`, distinct frontend/backend apps, end-user focus |
 | **`skills`** | `SKILL.md` files as primary content; `skills/` directory tree |
 | **`courseware`** | `exercises/` directory; numbered folders like `XX.YY-name/`; domain CLI tools |
 | **`docs`** | Primarily `.md` files, no build system; `gitbook.yaml`, `mkdocs.yml`, `_sidebar.md` |
@@ -71,6 +72,7 @@ specific signals observed and your best guess (if any).
   "message": "Signals observed: <list what you found>. My best guess: <archetype if any>.",
   "options": [
     { "label": "Code project (Node, Python, Rust, .NET, Go, etc.)" },
+    { "label": "Product / App (End-user facing, full-stack, monorepo)" },
     { "label": "AI Skills library (SKILL.md files)" },
     { "label": "Educational courseware (exercises, lessons)" },
     { "label": "Documentation site (Markdown, GitBook, MkDocs)" },
@@ -92,7 +94,7 @@ classification.
 State this block explicitly before moving to Step 1:
 
 ```
-Archetype : <code | skills | courseware | docs | hybrid>
+Archetype : <code | product | skills | courseware | docs | hybrid>
 Confidence: <high | confirmed by user>
 Signals   : <2–4 bullet observations>
 ```
@@ -104,24 +106,37 @@ Signals   : <2–4 bullet observations>
 Context gathering is archetype-specific. Use the branch that matches the archetype
 identified in Step 0.
 
-#### `code` — Run the recon script
+#### `code` — Run the core recon scripts
 
+First, establish the baseline:
 ```bash
-python /path/to/skill/scripts/recon.py <repo_root>
+python /path/to/skill/scripts/recon_core.py <repo_root>
 ```
 
-The script outputs a JSON summary covering:
-- Directory tree (depth-limited, ignoring noise)
-- Detected project type(s) and language(s)
-- Build / test / lint commands extracted from config files
-- Existing README.md and AGENTS.md content (if present)
-- Key entry points and important files
+Then, extract execution context (scripts, CI, test frameworks):
+```bash
+python /path/to/skill/scripts/recon_code.py <repo_root>
+```
 
-If the user hasn't provided a repo path, ask for it or default to `.` (current
-working directory).
-
-> **If no script available**, run the recon steps manually — see
+> **If no scripts available**, run the recon steps manually — see
 > `references/manual-recon.md`.
+
+#### `product` — Deep Semantic & Workspace Recon
+
+A product requires deep understanding of its boundaries and user documentation.
+
+1. **Establish Baseline & Code Context**:
+   Run `recon_core.py` and `recon_code.py` as shown in the `code` branch.
+2. **Locate & Extract Documentation**:
+   Run the docs semantic scanner to extract Getting Started guides and concepts:
+   ```bash
+   python /path/to/skill/scripts/recon_docs.py <repo_root>
+   ```
+3. **Map the Workspace Boundaries**:
+   Analyze `apps/`, `packages/`, or `lib/` to map out the monorepo structure:
+   ```bash
+   python /path/to/skill/scripts/recon_workspace.py <repo_root>
+   ```
 
 #### `skills` — Read skill definitions
 
@@ -159,22 +174,26 @@ another README) to capture the project's tone, terminology, and formatting conve
 
 ---
 
-### Step 2 — Determine what to generate
+### Step 2 — Smart Restructure & Migration (Scope & Merge)
 
-Check which files already exist:
+Check which files already exist and analyze their current content. Rather than
+blindly appending new information, actively restructure the existing documentation:
+
+1. **Analyze Existing Sections**: Read the current `README.md` and `AGENTS.md` (if any).
+2. **Force Audience Separation (Forking)**:
+   - **Move to AGENTS.md**: Extract any sections from README related to "How to build from source", local dev server commands, testing, compilation, debugging, or coding conventions. Remove them from README entirely.
+   - **Move to README.md**: Extract user-centric sections (Value Proposition, End-user Quick Start, Feature Tutorials, FAQ) from other files and consolidate them into the README.
+3. **Enforce Strict Ordering**: Map all retained content to the exact section order prescribed by the templates in `references/` (e.g., Overview -> Getting Started -> Features). Do not leave legacy sections floating at the bottom.
 
 | Situation | Action |
 |---|---|
-| Neither exists | Generate both from scratch |
-| README exists, AGENTS missing | Generate AGENTS.md; offer to refresh README |
-| AGENTS exists, README missing | Generate README.md; offer to refresh AGENTS |
-| Both exist | Update both, preserving user-written sections |
+| Neither exists | Generate both from scratch using strict template order |
+| README exists, AGENTS missing | Generate AGENTS.md; aggressively migrate dev instructions out of README |
+| AGENTS exists, README missing | Generate README.md; ensure it is strictly user-focused |
+| Both exist | Update both, migrating misplaced sections and enforcing template order |
 
 **Always ask before overwriting** custom sections (badges, screenshots, license
-blocks). When updating, use a merge strategy: keep human-written prose, refresh
-auto-detectable sections (install steps, commands, file structure).
-
-If a major reorganization is needed, explain why and present a suggested outline
+blocks). If a major reorganization is needed, explain why and present a suggested outline
 before proceeding.
 
 ---
@@ -183,7 +202,7 @@ before proceeding.
 
 Target audience: **human developers** visiting the repo.
 
-Use the template in `references/readme-template.md` as your structural guide. The
+Use the template in `references/readme-template.md` (or `references/product-readme-template.md` for products) as your structural guide. The
 template includes **archetype-specific section sets** — use the set that matches the
 archetype from Step 0, not all sections unconditionally.
 
@@ -248,6 +267,8 @@ clearly (e.g., "Build — TypeScript", "Build — .NET").
 ### Step 4 — Generate AGENTS.md
 
 Target audience: **AI coding agents** (Claude Code, Copilot, etc.).
+
+Use `references/agents-template.md` (or `references/product-agents-template.md` for products) as your baseline.
 
 Use the template in `references/agents-template.md` as your structural guide. For
 non-`code` archetypes, replace the **Commands** block with **Workflows & Commands**
