@@ -161,15 +161,27 @@ Inspect the `exercises/` (or equivalent) directory. For each section and exercis
 Identify any domain lint tool from `package.json` scripts
 (e.g., `pnpm ai-hero-cli internal lint`).
 
-#### `docs` — Build a page tree
+#### `docs` and `courseware` — Deep Document Recon
 
-Enumerate all `.md` files and their first-heading titles. Check for navigation
-config files (`gitbook.yaml`, `mkdocs.yml`, `_sidebar.md`, `docs/`). Note any
-build or publish workflow in scripts or CI files.
+Run the specialized feature-driven document scanner:
+```bash
+python /path/to/skill/scripts/recon_docs.py <repo_root>
+```
+This script detects specific capabilities (`has_learning_path`, `is_agentic_workspace`, `has_task_tracking`) and groups markdown files semantically rather than providing a raw file tree.
 
 #### `hybrid` — Combine applicable branches
 
 Apply all relevant branches above in parallel, then merge the gathered context.
+
+---
+
+### Step 1.5 — AI Semantic Intervention (Dynamic Adjustment)
+
+Python scripts cannot predict every custom repository structure. You **MUST** review the output from the recon scripts and actively intervene using your file-reading tools if necessary:
+
+1. **Massive Monolithic Files**: If you detect that the existing `README.md` is unusually large or acts as a "Single-Page Book" (containing deep instructional prose, tutorials, or extensive sections), you MUST read it manually. **Do not treat it as a simple index.**
+2. **Unrecognized Structures**: If the recon script returns unclassified folders with significant content (e.g., `solutions/`, `Materials/`), sample 1-2 files inside them manually to deduce the project's specific naming or structural conventions.
+3. **Adaptation**: Use your findings to dynamically adapt the documentation strategy in Step 2. Do not be blindly constrained by the rigid output of the python script if it missed the semantic purpose of a folder.
 
 ---
 
@@ -187,7 +199,8 @@ blindly appending new information, actively restructure the existing documentati
 2. **Force Audience Separation (Forking)**:
    - **Move to AGENTS.md**: Extract any sections from README related to "How to build from source", local dev server commands, testing, compilation, debugging, or coding conventions. Remove them from README entirely.
    - **Move to README.md**: Extract user-centric sections (Value Proposition, End-user Quick Start, Feature Tutorials, FAQ) from other files and consolidate them into the README.
-3. **Enforce Strict Ordering**: Map all retained content to the exact section order prescribed by the templates in `references/` (e.g., Overview -> Getting Started -> Features). Do not leave legacy sections floating at the bottom.
+3. **Content Preservation Engine (CRITICAL)**: If the existing `README.md` contains long-form instructional prose, domain-specific deep dives, or tutorials (common in `docs` and `courseware`), **you MUST preserve these sections entirely**. Do not delete them. Map them into the `{{PRESERVED_HUMAN_CONTENT}}` block of the new template.
+4. **Enforce Strict Ordering**: Map all retained content to the exact section order prescribed by the templates in `references/` (e.g., Overview -> Getting Started -> Features -> Preserved Content). Do not leave legacy sections floating at the bottom.
 
 | Situation | Action |
 |---|---|
