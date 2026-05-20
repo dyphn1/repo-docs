@@ -285,7 +285,7 @@ clearly (e.g., "Build — TypeScript", "Build — .NET").
 
 Target audience: **AI coding agents** (Claude Code, Copilot, etc.).
 
-Use `references/agents-template.md` (or `references/product-agents-template.md` for products) as your baseline.
+Use `references/agents-template.md` (or `references/product-agents-template.md` for products, `references/knowledge-agents-template.md` for docs/courseware) as your baseline.
 
 Use the template in `references/agents-template.md` as your structural guide. For
 non-`code` archetypes, replace the **Commands** block with **Workflows & Commands**

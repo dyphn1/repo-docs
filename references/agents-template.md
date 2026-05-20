@@ -23,7 +23,7 @@ template at the end of this file.
 | **`product`** | `## Development Commands` (Setup, Dev, Test, Build) | Tech Stack, Domain Knowledge Mapping, System Boundaries |
 | **`single-skill`**| `## Commands` (Testing, Linting) | See [`skills-agents-template.md`](skills-agents-template.md) (Taxonomy, Extension Rules, Schema) |
 | **`multi-skills`**| `## Commands` (Authoring, Linking, Linting) | See [`skills-agents-template.md`](skills-agents-template.md) (Taxonomy, Extension Rules, Schema) |
-| **`courseware`** | `## Workflows & Commands` (scaffold, lint, commit) | Exercise Structure, Naming Conventions, Lint Rules |
+| **`docs/courseware`**| `## Editing Rules & Formatting` | See [`knowledge-agents-template.md`](knowledge-agents-template.md) (Agentic Workflows, Task States) |
 | **`docs`** | `## Workflows & Commands` (build, preview, publish) | Page Tree, Authoring Rules, Style Conventions |
 | **`hybrid`** | Combine applicable blocks | Combine relevant extra sections |
 
