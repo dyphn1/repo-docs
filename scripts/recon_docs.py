@@ -2,18 +2,14 @@
 import json, os, sys, re
 from pathlib import Path
 
-def read_file_safe(path, max_bytes=2000):
-    try: return path.read_text(encoding="utf-8")[:max_bytes]
-    except: return ""
-
 def scan_markdown_dirs(root):
-    """Find directories containing primarily markdown files and group them."""
     md_dirs = {}
-    
-    # We'll scan depth 1 and 2 to find thematic folders
     for dirpath, dirnames, filenames in os.walk(root):
+        # Strictly ignore hidden directories
+        dirnames[:] = [d for d in dirnames if not d.startswith('.') and d not in ["node_modules", "scripts"]]
+        
         rel_path = Path(dirpath).relative_to(root)
-        if len(rel_path.parts) > 2 or rel_path.name.startswith('.') or rel_path.name in ["node_modules", "scripts"]:
+        if len(rel_path.parts) > 2:
             continue
             
         md_files = [f for f in filenames if f.endswith('.md')]
@@ -22,7 +18,6 @@ def scan_markdown_dirs(root):
                 "count": len(md_files),
                 "files_sample": md_files[:5]
             }
-    
     return md_dirs
 
 def main():
@@ -54,11 +49,6 @@ def main():
             features["is_agentic_workspace"] = True
             evidence["agent_files"].append(ind)
             
-    github_agents_dir = root / ".github" / "agents"
-    if github_agents_dir.exists() and github_agents_dir.is_dir():
-        features["is_agentic_workspace"] = True
-        evidence["agent_files"].extend([f.name for f in github_agents_dir.glob("*.md")])
-
     # 3. Task & Status Engine
     status_files = ["STATUS.md", "backlog.json", "CHANGELOG.md"]
     for sf in status_files:

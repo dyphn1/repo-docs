@@ -110,7 +110,8 @@ identified in Step 0.
 
 #### `code` — Run the core recon scripts
 
-First, establish the baseline:
+First, establish the baseline. Do not rely solely on stdout for large content.
+The script should save long extracted content (like preserved human text) into temporary files and output a JSON map of references.
 ```bash
 python /path/to/skill/scripts/recon_core.py <repo_root>
 ```
@@ -120,8 +121,7 @@ Then, extract execution context (scripts, CI, test frameworks):
 python /path/to/skill/scripts/recon_code.py <repo_root>
 ```
 
-> **If no scripts available**, run the recon steps manually — see
-> `references/manual-recon.md`.
+> **Fallback Mechanism**: If the python scripts fail to execute due to environment constraints or missing paths, **do not halt**. Fall back to manual reconnaissance. Use your native tools (`file_search`, `grep_search`, `read_file`) to inspect the config files listed in the "Config file → field mapping" section below and manually extract the required information.
 
 #### `product` — Deep Semantic & Workspace Recon
 
@@ -245,8 +245,7 @@ archetype from Step 0, not all sections unconditionally.
 | **License** | SPDX ID from LICENSE file or package.json |
 | **For AI Agents** | One-line notice pointing agents to `AGENTS.md` (see below) |
 
-Skip sections gracefully when the required info is genuinely unavailable; use
-`{{TODO: ...}}` with a verification hint rather than omitting silently.
+Skip optional sections gracefully when the required info is genuinely unavailable. However, for **core required sections based on the repository archetype** (e.g., Build and Install for `code`, or Setup for `product`), do not omit silently. Instead, keep the section heading and use `{{TODO: ...}}` with a verification hint so the developer knows what crucial information is missing.
 
 Write in **clear, friendly prose**. Avoid bullet overload — use bullets only for
 lists of commands or options. Preserve project-specific terminology exactly as
@@ -328,8 +327,11 @@ is machine-read first.
 
 Write to `<repo_root>/README.md` and `<repo_root>/AGENTS.md`.
 
-If updating existing files, show a diff summary of what changed before writing.
-Always confirm with the user before overwriting.
+**CRITICAL for Preserved Content:** Before generating the final `README.md`, if the recon step yielded pointers to temporary files containing preserved human content, you MUST use the `read_file` tool to read the contents of those temporary files into your context. You must physically assemble the complete file string, combining the new auto-generated sections with the exact preserved text, and then write the final assembled content. Do not output placeholder pointers (like `/tmp/preserved_text.md`) in the final file.
+
+**Autonomous Execution & Confirmation Rule:**
+- **Default (Autonomous):** If the archetype is identified with high confidence and no significant structural conflicts exist, proceed to generate and overwrite the files autonomously. Show a diff summary of what changed *after* writing.
+- **Ambiguous Cases (Requires Confirmation):** If the archetype was low-confidence (requiring Step 0 forced clarification), if you had to perform extensive manual intervention in Step 1.5, or if existing human content cannot be cleanly mapped to the new template, you MUST pause. Present a summary of the gathered JSON data and your proposed document outline to the user. Wait for explicit confirmation before generating and overwriting the files.
 
 ---
 
