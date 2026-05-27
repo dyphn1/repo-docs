@@ -2,12 +2,16 @@
 
 This delegate handles the `code`, `product`, and `hybrid` archetypes.
 
-## Step 1 — Gather repo context
+## Operating Scope (Single vs. Multi-Repo)
+- **Single Target**: If documenting a single repository or directory, execute Steps 1–6 for that target.
+- **Multiple Targets (Workspaces/Submodules)**: If requested to update multiple submodules or a monorepo, execute Steps 1–5 **in a loop** for each target directory individually. After all submodules are updated, perform a final aggregation at the root directory to generate the parent `README.md` and `AGENTS.md`.
+
+## Step 1 — Gather context
 
 1. **Establish Baseline & Code Context**:
    Run the core recon script:
    ```bash
-   python /path/to/skill/scripts/recon_workspace.py <repo_root>
+   python /path/to/skill/scripts/recon_workspace.py <target_dir>
    ```
    *Fallback Mechanism*: If the python script fails, use your native tools (`file_search`, `read_file`) to inspect `package.json`, `Cargo.toml`, `pyproject.toml`, `*.sln`, etc.
 
@@ -62,7 +66,7 @@ Use `references/product-readme-template.md` or `references/readme-template.md`.
 
 ## Step 5 — Write files & Verify
 
-- Write to `<repo_root>/README.md` and `<repo_root>/AGENTS.md`.
+- Write to `<target_dir>/README.md` and `<target_dir>/AGENTS.md`.
 - Ensure all commands exist in config files or scripts.
 - Ensure no AI-specific content remains in README.md.
 - Ensure version numbers match config files.
