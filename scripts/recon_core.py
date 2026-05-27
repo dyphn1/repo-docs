@@ -22,7 +22,11 @@ def build_tree(root, depth=2, current=0):
     return items
 
 def detect_languages(root):
-    ext_map = {".ts": "TypeScript", ".js": "JavaScript", ".py": "Python", ".rs": "Rust", ".go": "Go"}
+    ext_map = {
+        ".ts": "TypeScript", ".js": "JavaScript", ".py": "Python", ".rs": "Rust", ".go": "Go",
+        ".cs": "C#", ".fs": "F#", ".java": "Java", ".kt": "Kotlin",
+        ".c": "C", ".cpp": "C++", ".h": "C/C++ Header", ".hpp": "C++ Header"
+    }
     counts = {}
     
     # Using os.walk instead of rglob to properly skip ignored directories
@@ -43,17 +47,30 @@ def detect_package_manager(root):
     if (root / "yarn.lock").exists(): return "yarn"
     if (root / "package-lock.json").exists(): return "npm"
     if (root / "Cargo.toml").exists(): return "cargo"
-    if (root / "pyproject.toml").exists(): return "poetry/pip"
+    if (root / "pyproject.toml").exists() or (root / "requirements.txt").exists(): return "poetry/pip"
+    if (root / "pom.xml").exists(): return "maven"
+    if (root / "build.gradle").exists() or (root / "build.gradle.kts").exists(): return "gradle"
+    if (root / "go.mod").exists(): return "go modules"
+    if list(root.glob("*.sln")): return "msbuild/nuget"
     return "unknown"
 
 def main():
     root = Path(sys.argv[1] if len(sys.argv) > 1 else ".").resolve()
+    
+    is_monorepo = any([
+        (root / "pnpm-workspace.yaml").exists(),
+        (root / "lerna.json").exists(),
+        (root / "turbo.json").exists(),
+        (root / "go.work").exists(),
+        bool(list(root.glob("*.sln")))  # C# solution files often imply multiple projects
+    ])
+    
     result = {
         "repo_root": str(root),
         "project_name": root.name,
         "languages": detect_languages(root),
         "package_manager": detect_package_manager(root),
-        "is_monorepo": (root / "pnpm-workspace.yaml").exists() or (root / "lerna.json").exists() or (root / "turbo.json").exists(),
+        "is_monorepo": is_monorepo,
         "tree_shallow": build_tree(root, depth=2)
     }
     print(json.dumps(result, indent=2))

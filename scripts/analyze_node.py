@@ -30,7 +30,9 @@ def main():
                 "path": str(Path(dirpath).relative_to(root)) if dirpath != str(root) else ".",
                 "primary_language": "TypeScript/JavaScript",
                 "role": role,
-                "key_dependencies": list(pkg.get("dependencies", {}).keys())[:10]
+                "key_dependencies": list(pkg.get("dependencies", {}).keys())[:10],
+                "scripts": pkg.get("scripts", {}),
+                "engines": pkg.get("engines", {})
             })
 
     print(json.dumps(workspaces, indent=2))

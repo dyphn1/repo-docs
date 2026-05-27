@@ -18,14 +18,26 @@ def main():
         deps = []
         is_python = False
         name = Path(dirpath).name
+        scripts = {}
+        python_version = "unknown"
         
         if "pyproject.toml" in filenames:
             is_python = True
             try:
                 content = (Path(dirpath) / "pyproject.toml").read_text(encoding="utf-8")
-                # simple extraction
+                in_scripts = False
                 for line in content.splitlines():
-                    if line.startswith("name = "): name = line.split("=")[1].strip().strip('\'"')
+                    line_stripped = line.strip()
+                    if line_stripped.startswith("name = "): name = line.split("=")[1].strip().strip('\'"')
+                    elif line_stripped.startswith("requires-python ="): python_version = line.split("=")[1].strip().strip('\'"')
+                    
+                    if line_stripped == "[project.scripts]" or line_stripped == "[tool.poetry.scripts]":
+                        in_scripts = True
+                    elif line_stripped.startswith("[") and in_scripts:
+                        in_scripts = False
+                    elif in_scripts and "=" in line_stripped:
+                        key, val = line_stripped.split("=", 1)
+                        scripts[key.strip()] = val.strip()
             except: pass
         elif "requirements.txt" in filenames:
             is_python = True
@@ -40,6 +52,8 @@ def main():
                 "path": str(Path(dirpath).relative_to(root)) if dirpath != str(root) else ".",
                 "primary_language": "Python",
                 "role": guess_role(deps, name),
+                "python_version": python_version,
+                "scripts": scripts,
                 "key_dependencies": deps[:10]
             })
 

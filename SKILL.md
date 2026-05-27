@@ -20,8 +20,7 @@ details.
 ## Core Principles
 
 - **Never invent facts.** Every command, version number, path, or claim must come
-  from a readable file. If data is missing, use `{{TODO: <description and how to verify>}}`
-  and tell the user how to fill it in.
+  from a readable file. If data is missing, omit the section or describe it at a high level. Do NOT generate `{{TODO}}` placeholders, as they create clutter.
 - **Preserve human-written content.** When updating existing files, keep prose,
   screenshots, badges, and custom sections intact. Only refresh auto-detectable
   sections (commands, structure, versions).
@@ -157,8 +156,7 @@ Use your native tools (e.g., `read_file`) to load the corresponding delegate fil
 **Monorepos**: Generate a root-level README/AGENTS.md that describes the workspace
 and lists packages. Note individual packages may have their own docs.
 
-**Private / no description**: Use directory name as project name; leave description
-as `{{TODO: add a one-line project description}}`.
+**Private / no description**: Use directory name as project name; describe it based on the detected archetype and role.
 
 **Existing README with screenshots**: Preserve image links exactly — never remove
 or rewrite media references.
