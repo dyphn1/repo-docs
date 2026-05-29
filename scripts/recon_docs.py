@@ -1,23 +1,35 @@
 #!/usr/bin/env python3
-import json, os, sys, re
+import json, os, sys, re, subprocess
 from pathlib import Path
 
 def scan_markdown_dirs(root):
     md_dirs = {}
-    for dirpath, dirnames, filenames in os.walk(root):
-        # Strictly ignore hidden directories
-        dirnames[:] = [d for d in dirnames if not d.startswith('.') and d not in ["node_modules", "scripts"]]
+    
+    # Attempt to use git ls-files as the source of truth
+    try:
+        git_output = subprocess.run(["git", "ls-files"], cwd=root, capture_output=True, text=True, check=True).stdout
+        all_files = [Path(p) for p in git_output.splitlines()]
+    except Exception:
+        # Fallback to safe recursive scan if not a git repo
+        IGNORE_DIRS = {'.git', '.svn', 'node_modules', 'dist', 'build', 'venv', '__pycache__'}
+        all_files = []
+        for dirpath, dirnames, filenames in os.walk(root):
+            dirnames[:] = [d for d in dirnames if d not in IGNORE_DIRS]
+            all_files.extend([Path(dirpath) / f for f in filenames])
         
-        rel_path = Path(dirpath).relative_to(root)
-        if len(rel_path.parts) > 2:
-            continue
-            
-        md_files = [f for f in filenames if f.endswith('.md')]
-        if len(md_files) > 0:
-            md_dirs[str(rel_path)] = {
-                "count": len(md_files),
-                "files_sample": md_files[:5]
-            }
+    for p in all_files:
+        if p.suffix == '.md':
+            parent_dir = str(p.parent)
+            if parent_dir == ".":
+                continue
+                
+            if parent_dir not in md_dirs:
+                md_dirs[parent_dir] = {"count": 0, "files_sample": []}
+                
+            md_dirs[parent_dir]["count"] += 1
+            if len(md_dirs[parent_dir]["files_sample"]) < 5:
+                md_dirs[parent_dir]["files_sample"].append(p.name)
+                
     return md_dirs
 
 def main():

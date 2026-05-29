@@ -1,17 +1,19 @@
 # Phase 4: Finalize and Write
 
-## Core Principles
-- MUST execute steps one by one.
-- MUST NOT combine terminal commands (e.g., using `&&` or `;`).
-- MUST NOT skip steps or assume outcomes without checking.
+**[State Checkpoint]**
+- MUST verify the finalized draft strings for `README.md` and `AGENTS.md` passed from Phase 3.
+- MUST ensure terminal is located at the `Target Directory`.
 
-## Execution Steps
+## [Summarize: Final Validation]
+1. Content Review: MUST review the final drafted content in memory.
+2. Separation of Concerns: MUST verify human-readable and agent-readable content are fully separated.
+3. Constraint Check: MUST verify all strict rules and architectural specs are intact.
 
-1. MUST review the final drafted content.
-2. MUST verify human-readable and agent-readable content are fully separated.
-3. MUST verify all strict rules and architectural specs are intact.
-4. MUST present the final drafted content to the user for confirmation.
-5. MUST write the final `README.md` and `AGENTS.md` to the target directory ONLY IF user approves.
-6. MUST log success and terminate execution.
+## [Action Phase: User Consent]
+4. Authorization: MUST present a summary of the final drafted content to the user for confirmation via `vscode_askQuestions`.
+5. Disk Write: MUST write the final `README.md` and `AGENTS.md` to the `Target Directory` ONLY IF the user explicitly approves.
 
-Next: EOF
+## [Record: Exit]
+6. Completion: MUST log success, declare the new documentation state, and terminate execution.
+
+[Exit: Await User Instruction]

@@ -22,7 +22,18 @@ def main():
             
     # Calculate unrecognized directories at top level
     recognized_paths = {Path(ws["path"]).resolve() for ws in all_workspaces}
-    top_level_dirs = [d for d in root.iterdir() if d.is_dir() and not d.name.startswith('.')]
+    
+    # Use git ls-files if available, fallback to basic scan
+    try:
+        git_output = subprocess.run(["git", "ls-files"], cwd=root, capture_output=True, text=True, check=True).stdout
+        tracked_files = [root / p for p in git_output.splitlines()]
+        # Extract unique top-level directories from tracked files
+        top_level_dirs = {p.parts[len(root.parts)] for p in tracked_files if len(p.parts) > len(root.parts) and (root / p.parts[len(root.parts)]).is_dir()}
+        top_level_dirs = [root / d for d in top_level_dirs]
+    except Exception:
+        # Fallback if not a git repo
+        IGNORE_DIRS = {'.git', '.svn', 'node_modules', 'dist', 'build', 'venv', '__pycache__'}
+        top_level_dirs = [d for d in root.iterdir() if d.is_dir() and d.name not in IGNORE_DIRS]
     
     unrecognized = []
     for d in top_level_dirs:

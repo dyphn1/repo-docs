@@ -1,19 +1,19 @@
 # Phase 3: Draft Content
 
-## Core Principles
-- MUST execute steps one by one.
-- MUST NOT combine terminal commands (e.g., using `&&` or `;`).
-- MUST NOT skip steps or assume outcomes without checking.
+**[State Checkpoint]**
+- MUST verify the inheritance of `Target Directory`, `archetype`, `PRESERVED_HUMAN_CONTENT`, and `SKILL_LOGIC_SUMMARY` from Phase 2.
 
-## Execution Steps
+## [Preparation Phase]
+1. Template Selection: MUST select appropriate templates from `references/` based strictly on the `archetype`.
 
-1. MUST select templates from `references/` based on archetype.
-2. MUST perform Smart Merge (智慧合併) of `PRESERVED_HUMAN_CONTENT`, `SKILL_LOGIC_SUMMARY`, and Templates.
-3. MUST draft human-readable `README.md` containing workflows, architecture, and value proposition.
-4. MUST draft agent-readable `AGENTS.md` containing strict rules, logic models, and authoring constraints.
-5. MUST NOT degrade original quality or use vague placeholders.
-6. MUST compare the drafted files against the original files.
-7. MUST fix any missing context or logic gaps identified during comparison.
-8. MUST execute `workflows/04-write.md`.
+## [Action Phase: Drafting]
+2. Smart Merge: MUST merge `PRESERVED_HUMAN_CONTENT`, `SKILL_LOGIC_SUMMARY`, and the selected Templates. MUST NOT degrade original quality or use vague placeholders.
+3. Human File: MUST draft human-readable `README.md` containing workflows, architecture, and value proposition.
+4. Agent File: MUST draft agent-readable `AGENTS.md` containing strict rules, logic models, and authoring constraints.
 
-Next: Execute `workflows/04-write.md`
+## [Summarize & Refine Phase]
+5. Gap Analysis: MUST compare the newly drafted files against the original context.
+6. Self-Correction: MUST fix any missing context or logic gaps identified during the comparison BEFORE proceeding.
+
+## [Record: Handoff]
+7. Handoff: MUST execute `workflows/04-write.md` and explicitly pass the finalized draft strings for `README.md` and `AGENTS.md`.

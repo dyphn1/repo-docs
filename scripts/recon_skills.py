@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import json, os, sys, re
+import json, os, sys, re, subprocess
 from pathlib import Path
 
 def read_file_safe(path):
@@ -14,17 +14,25 @@ def extract_raw_frontmatter(content):
 
 def main():
     root = Path(sys.argv[1] if len(sys.argv) > 1 else ".").resolve()
-    skill_files = list(root.rglob("SKILL.md"))
+    
+    # Use Git to find files to respect .gitignore
+    try:
+        git_output = subprocess.run(["git", "ls-files"], cwd=root, capture_output=True, text=True, check=True).stdout
+        skill_files = [root / p for p in git_output.splitlines() if Path(p).name == "SKILL.md"]
+    except Exception:
+        # Safe fallback for non-git environments
+        IGNORE_DIRS = {'.git', '.svn', 'node_modules', 'dist', 'build', 'venv', '__pycache__'}
+        skill_files = []
+        for dirpath, dirnames, filenames in os.walk(root):
+            dirnames[:] = [d for d in dirnames if d not in IGNORE_DIRS]
+            if "SKILL.md" in filenames:
+                skill_files.append(Path(dirpath) / "SKILL.md")
     
     archetype = "single-skill" if len(skill_files) == 1 and (root / "SKILL.md").exists() else "multi-skills"
     
     raw_skills = []
     
     for sf in skill_files:
-        # Strictly ignore hidden directories
-        if any(part.startswith('.') for part in sf.relative_to(root).parts[:-1]):
-            continue
-            
         content = read_file_safe(sf)
         raw_fm = extract_raw_frontmatter(content)
         
